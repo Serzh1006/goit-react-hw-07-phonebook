@@ -3,10 +3,10 @@ import Filter from './filter/Filter';
 import PhoneBook from './phonebook';
 import css from './app.module.css';
 import { useSelector } from 'react-redux';
-import { getContacts } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
 
 export const App = () => {
-  const contactsFromState = useSelector(getContacts);
+  const contactsFromState = useSelector(selectContacts);
 
   return (
     <div>

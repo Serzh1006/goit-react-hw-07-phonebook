@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/phoneBookSlice';
-import { getContacts } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
 import css from './phonebook.module.css';
 
 const PhoneBook = () => {
   const [nameUser, setNameUser] = useState('');
   const [number, setNumber] = useState('');
 
-  const dataContacts = useSelector(getContacts);
+  const dataContacts = useSelector(selectContacts);
   const dispatch = useDispatch();
 
   const getValue = e => {
