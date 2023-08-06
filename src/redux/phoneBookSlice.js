@@ -1,5 +1,9 @@
-import { createSlice, nanoid, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
+import { fetchContacts } from 'servises/fetchContactsApi';
+import { addNewContactsToDB } from 'servises/addContactsApi';
+import { deleteContactUser } from '../servises/deleteContactApi';
+import { messageObj } from '../helpers/settings';
 
 const contactsState = {
   contacts: {
@@ -9,66 +13,9 @@ const contactsState = {
   },
 };
 
-// const requestOptions = {
-//   method: 'POST',
-//   headers: { 'Content-Type': 'application/json' },
-//   body: JSON.stringify(contactsState.contacts.items[0]),
-// };
-
-export const fetchContacts = createAsyncThunk(
-  'contacts/fetchAll',
-  async (_, thunkAPI) => {
-    try {
-      const response = await axios.get(
-        'https://64caa0e0700d50e3c7052271.mockapi.io/contacts'
-      );
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
-export const addNewContacts = createAsyncThunk(
-  'contacts/addContacts',
-  async (newContact, thunkAPI) => {
-    try {
-      const response = await axios.post(
-        'https://64caa0e0700d50e3c7052271.mockapi.io/contacts',
-        newContact
-      );
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
 const phoneBookSlice = createSlice({
   name: 'contacts',
   initialState: contactsState,
-  reducers: {
-    addContact: {
-      reducer(state, action) {
-        state.contacts.items.push(action.payload);
-      },
-      prepare(nameUser, number) {
-        return {
-          payload: {
-            id: nanoid(),
-            nameUser,
-            number,
-          },
-        };
-      },
-    },
-    deleteContact(state, action) {
-      const indexElem = state.contacts.items.findIndex(
-        contact => contact.id === action.payload
-      );
-      state.contacts.items.splice(indexElem, 1);
-    },
-  },
   extraReducers: builder => {
     builder
       .addCase(fetchContacts.pending, state => {
@@ -77,30 +24,45 @@ const phoneBookSlice = createSlice({
       })
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.contacts.isLoading = false;
-        if (action.payload.length === 0) {
-          return;
-        }
-        state.contacts.items.push(action.payload);
+        state.contacts.items = action.payload;
       })
       .addCase(fetchContacts.rejected, (state, action) => {
         state.contacts.isLoading = false;
         state.contacts.error = action.payload;
+        toast.error(`${action.payload}`, messageObj);
       })
-      .addCase(addNewContacts.pending, state => {
+      .addCase(addNewContactsToDB.pending, state => {
         state.contacts.isLoading = true;
         state.contacts.error = null;
       })
-      .addCase(addNewContacts.fulfilled, state => {
+      .addCase(addNewContactsToDB.fulfilled, (state, action) => {
         state.contacts.isLoading = false;
-        alert('Object was added to DB');
+        state.contacts.items.push(action.payload);
+        toast.success('Контакт был успешно добавлен', messageObj);
       })
-      .addCase(addNewContacts.rejected, (state, action) => {
+      .addCase(addNewContactsToDB.rejected, (state, action) => {
         state.contacts.isLoading = false;
         state.contacts.error = action.payload;
+        toast.error(`${action.payload}`, messageObj);
+      })
+      .addCase(deleteContactUser.pending, state => {
+        state.contacts.isLoading = true;
+        state.contacts.error = null;
+      })
+      .addCase(deleteContactUser.fulfilled, (state, action) => {
+        state.contacts.isLoading = false;
+        const indexElem = state.contacts.items.findIndex(
+          contact => contact.id === action.payload.id
+        );
+        state.contacts.items.splice(indexElem, 1);
+        toast.success('Контакт был успешно удален', messageObj);
+      })
+      .addCase(deleteContactUser.rejected, (state, action) => {
+        state.contacts.isLoading = false;
+        state.contacts.error = action.payload;
+        toast.error(`${action.payload}`, messageObj);
       });
   },
 });
 
 export const Reducer = phoneBookSlice.reducer;
-
-export const { addContact, deleteContact } = phoneBookSlice.actions;

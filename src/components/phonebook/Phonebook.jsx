@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact, addNewContacts } from 'redux/phoneBookSlice';
+import { addNewContactsToDB } from 'servises/addContactsApi';
 import { selectContacts } from 'redux/selectors';
+import { messageObj } from '../../helpers/settings';
 import css from './phonebook.module.css';
 
 const PhoneBook = () => {
@@ -34,13 +36,12 @@ const PhoneBook = () => {
       contact => contact.nameUser === nameUser
     );
     if (findName !== undefined) {
-      alert(`${findName.nameUser} is already in contacts`);
+      toast.error(`${findName.nameUser} is already in contacts`, messageObj);
       setNameUser('');
       setNumber('');
       return;
     } else {
-      dispatch(addContact(nameUser, number));
-      dispatch(addNewContacts({ nameUser, number }));
+      dispatch(addNewContactsToDB({ nameUser, number }));
     }
     setNameUser('');
     setNumber('');
@@ -65,7 +66,7 @@ const PhoneBook = () => {
       </label>
 
       <label className={css.label}>
-        Number
+        Phone
         <input
           className={css.input}
           type="tel"
