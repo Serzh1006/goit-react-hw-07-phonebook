@@ -8,7 +8,7 @@ import { fetchContacts } from '../redux/phoneBookSlice';
 import css from './app.module.css';
 
 export const App = () => {
-  const contactsFromState = useSelector(selectContacts);
+  // const contactsFromState = useSelector(selectContacts);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export const App = () => {
       <PhoneBook />
       <h2 className={css.contacts}>Contacts</h2>
       <Filter />
-      {contactsFromState.length !== 0 && <Contacts />}
+      {/* {contactsFromState.length !== 0 && <Contacts />} */}
     </div>
   );
 };
