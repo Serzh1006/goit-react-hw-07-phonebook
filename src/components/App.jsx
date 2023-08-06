@@ -1,7 +1,7 @@
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { selectContacts } from 'redux/selectors';
-import Contacts from './contacts/Contacts';
+// import { selectContacts } from 'redux/selectors';
+// import Contacts from './contacts/Contacts';
 import Filter from './filter/Filter';
 import PhoneBook from './phonebook';
 import { fetchContacts } from '../redux/phoneBookSlice';
