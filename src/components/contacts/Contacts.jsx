@@ -5,6 +5,7 @@ import css from './contacts.module.css';
 
 const Contacts = () => {
   const contactsArray = useSelector(selectContacts);
+  console.log(contactsArray);
   const normilizedFilter = useSelector(selectFilter).toLowerCase();
   const filterContacts = contactsArray.filter(contact =>
     contact.nameUser.toLowerCase().includes(normilizedFilter)

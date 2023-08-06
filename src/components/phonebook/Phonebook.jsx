@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/phoneBookSlice';
+import { addContact, addNewContacts } from 'redux/phoneBookSlice';
 import { selectContacts } from 'redux/selectors';
 import css from './phonebook.module.css';
 
@@ -40,6 +40,7 @@ const PhoneBook = () => {
       return;
     } else {
       dispatch(addContact(nameUser, number));
+      dispatch(addNewContacts({ nameUser, number }));
     }
     setNameUser('');
     setNumber('');
